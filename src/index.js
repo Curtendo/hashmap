@@ -9,7 +9,7 @@ class Node {
 class HashMap {
   constructor() {
     this.loadFactorExp = 4;
-    this.bucketAmount = 2**this.loadFactorExp;
+    this.bucketAmount = 2 ** this.loadFactorExp;
     this.buckets = new Array(this.bucketAmount).fill(null);
   }
 
@@ -35,8 +35,8 @@ class HashMap {
     this.validateIndex(index);
 
     // Calculate load factor
-    if (this.calcLoadFactor > 0.75) {
-
+    while (this.calcLoadFactor() > 0.75) {
+      this.increaseBuckets();
     }
 
     // If the bucket is empty, this node is now the head
@@ -182,9 +182,24 @@ class HashMap {
   }
 
   calcLoadFactor() {
-    const items = this.length();
-    const loadFactor = this.bucketAmount / items;
+    const items = this.length() + 1;
+    const loadFactor = items / this.buckets.length;
     return loadFactor;
+  }
+
+  increaseBuckets() {
+    const arrayCopy = this.entries();
+
+    this.loadFactorExp++;
+    this.bucketAmount = 2 ** this.loadFactorExp;
+
+    this.clear();
+    this.buckets = null;
+    this.buckets = new Array(this.bucketAmount).fill(null);
+
+    for (let i = 0; i < arrayCopy.length; i++) {
+      this.set(arrayCopy[i][0], arrayCopy[i][1]);
+    }
   }
 
   display() {
@@ -207,19 +222,26 @@ test.set('jacket', 'blue');
 test.set('kite', 'pink');
 test.set('lion', 'golden');
 
-console.log(test.display());
-
-console.log(test.remove('lion'));
-
-console.log(test.display());
-// console.log(test.get('hat'));
-// console.log(test.get('carrot'));
-// console.log(test.get('bird'));
 console.log(test.has('banana'));
 console.log(test.has('beard'));
 console.log(test.length());
 // test.clear();
 // console.log(test.display());
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
+
+test.set('moon', 'silver');
+console.log(test.display());
+
+console.log(test.get('hat'));
+console.log(test.get('carrot'));
+console.log(test.get('bird'));
+
+console.log(test.has('banana'));
+console.log(test.has('beard'));
+console.log(test.length());
+// test.clear();
 console.log(test.keys());
 console.log(test.values());
 console.log(test.entries());
